@@ -1,0 +1,15 @@
+<div>
+<form  [formGroup]="formLogin">
+<h1>Login</h1>
+<div>
+<label for="username">Username</label>
+<input type="text" formControlName="username"/>
+</div>
+<div>
+<label for="password">Password</label>
+<input type="text"formControlName="password"></div>
+<button>Log in</button>
+</form>
+<p class ="a">{{formLogin.value | json}}</p>
+<p class ="b">{{formLogin.valid}}</p>
+</div>
