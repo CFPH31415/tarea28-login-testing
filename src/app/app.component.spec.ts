@@ -1,31 +1,73 @@
-import { TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  });
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
+      declarations: [ AppComponent ]
+    })
+    .compileComponents();
+  }));
 
-  it(`should have as title 'testing'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('testing');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('testing');
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have a title', () => {
+    expect(component.title).toBe('testing');
+  });
+
+  it('should have a valid formLogin', () => {
+    expect(component.formLogin.valid).toBeFalsy();
+  });
+
+  it('should require username and password fields', () => {
+    let username = component.formLogin.controls['username'];
+    let password = component.formLogin.controls['password'];
+
+    username.setValue('');
+    password.setValue('');
+
+    expect(username.valid).toBeFalsy();
+    expect(password.valid).toBeFalsy();
+  });
+
+  it('should validate minimum length of 5 for username and password fields', () => {
+    let username = component.formLogin.controls['username'];
+    let password = component.formLogin.controls['password'];
+
+    username.setValue('user');
+    password.setValue('pass');
+
+    expect(username.valid).toBeFalsy();
+    expect(password.valid).toBeFalsy();
+  });
+
+  it('should show form values on submit', () => {
+    let username = component.formLogin.controls['username'];
+    let password = component.formLogin.controls['password'];
+
+    username.setValue('testuser');
+    password.setValue('testpass');
+
+    let formValues = fixture.debugElement.query(By.css('.a'));
+    let formButton = fixture.debugElement.query(By.css('button'));
+    formButton.triggerEventHandler('click', null);
+
+    expect(formValues.nativeElement.textContent).toContain('testuser');
+    expect(formValues.nativeElement.textContent).toContain('testpass');
   });
 });
+
